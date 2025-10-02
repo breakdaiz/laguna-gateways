@@ -16,9 +16,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import RegisterForm from "./(public)/_components/register-form";
+import LoginForm from "./(public)/_components/login-form";
+import { useSearchParams } from "next/navigation";
 
 const HomePage = () => {
   const [openSidebar, setOpenSidebar] = React.useState(false);
+
+  const searchParams = useSearchParams();
+  const formType = searchParams.get("formType");
 
   return (
     <div>
@@ -89,33 +95,19 @@ const HomePage = () => {
 
       {openSidebar && (
         <Sheet open={openSidebar} onOpenChange={open => setOpenSidebar(open)}>
-          <SheetTrigger asChild>
-            <Button variant='outline'>Open</Button>
-          </SheetTrigger>
-          <SheetContent>
+          <SheetContent className='lg:min-w-[500px]'>
             <SheetHeader>
-              <SheetTitle>Edit profile</SheetTitle>
-              <SheetDescription>
-                Make changes to your profile here. Click save when you&apos;re
-                done.
-              </SheetDescription>
+              <SheetTitle></SheetTitle>
             </SheetHeader>
-            <div className='grid flex-1 auto-rows-min gap-6 px-4'>
-              <div className='grid gap-3'>
-                <Label htmlFor='sheet-demo-name'>Name</Label>
-                <Input id='sheet-demo-name' defaultValue='Pedro Duarte' />
-              </div>
-              <div className='grid gap-3'>
-                <Label htmlFor='sheet-demo-username'>Username</Label>
-                <Input id='sheet-demo-username' defaultValue='@peduarte' />
-              </div>
+            <div className='flex items-center justify-center h-screen'>
+              {formType === "register" ? <RegisterForm /> : <LoginForm />}
             </div>
+            {/* 
             <SheetFooter>
-              <Button type='submit'>Save changes</Button>
               <SheetClose asChild>
-                <Button variant='outline'>Close</Button>
+                <Button type='submit'>Save changes</Button>
               </SheetClose>
-            </SheetFooter>
+            </SheetFooter> */}
           </SheetContent>
         </Sheet>
       )}
