@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { email, z } from "zod";
@@ -18,6 +18,11 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { loginUser } from "@/server-actions/user";
+import { IUser } from "@/interfaces";
+import toast from "react-hot-toast";
+import Cookie from "js-cookie";
 
 const rolesArray = [
   { id: 0, value: "user", label: "User" },
@@ -30,6 +35,9 @@ const formSchema = z.object({
 });
 
 function LoginForm() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,10 +47,20 @@ function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const res = await loginUser(values as Partial<IUser>);
+    setLoading(false);
+
+    if (res.success) {
+      toast.success(res.message || "Logged in successfully");
+      Cookie.set("jwt_token", res.data?.token || "");
+      Cookie.set("role", res.data.role || "");
+      router.push(`${res.data.role}/dashboard`);
+      // router.refresh();
+    } else {
+      toast.error(res.message || "Something went wrong");
+    }
   }
   return (
     <div className='w-full px-10'>
@@ -126,7 +144,9 @@ function LoginForm() {
                 Register
               </Link>
             </h1>
-            <Button type='submit'>Login</Button>
+            <Button disabled={loading} type='submit'>
+              Login
+            </Button>
           </div>
         </form>
       </Form>
