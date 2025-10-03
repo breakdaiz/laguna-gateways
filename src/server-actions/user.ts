@@ -34,13 +34,48 @@ export const registerUser = async (payload: Partial<IUser>) => {
     .from("user_profiles")
     .insert([payload]);
   if (insertError) {
-    return {
-      success: false,
-      message: insertError.message,
-    };
+    return errorResponse(insertError.message);
   }
-  return {
-    success: true,
-    message: "User registered successfully",
-  };
+  return successResponse(newUser, "User registered successfully.");
+<<<<<<< HEAD
+};
+
+export const loginUser = async (payload: Partial<IUser>) => {
+  //  step1: check if user exist using email, if not give success false
+  const { data: existingUsers, error: existingUsersError } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("email", payload.email);
+
+  if (existingUsersError) {
+    return errorResponse(existingUsersError.message);
+  }
+  if (existingUsersError || !existingUsers || existingUsers.length === 0) {
+    return errorResponse("User does not exist.");
+  }
+  const existingUser = existingUsers[0];
+
+  // step2: if user exist, compare the password, if not match give success false
+  const isPasswordMatch = await bcrypt.compare(
+    payload.password || "",
+    existingUser.password
+  );
+  if (!isPasswordMatch) {
+    return errorResponse("Invalid password.");
+  }
+  if (payload.role !== existingUser.role) {
+    return errorResponse(
+      `You do not have permission to access this resource ${payload.role}`
+    );
+  }
+  // step3: if password match, generate a JWT token and return success true
+  const token = jwt.sign(
+    { id: existingUser.id, email: existingUser.email, role: existingUser.role },
+    process.env.JWT_SECRET || "",
+    { expiresIn: "1h" }
+  );
+
+  return successResponse({ token, role: payload.role }, "Login successful.");
+=======
+>>>>>>> e7beb558512557b7b47fc19d121852f56f0e7cce
 };
