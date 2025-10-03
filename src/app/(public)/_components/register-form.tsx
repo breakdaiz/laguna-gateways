@@ -20,6 +20,7 @@ import Link from "next/link";
 import { registerUser } from "@/server-actions/user";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { IServerActionResponse } from "@/interfaces";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -42,7 +43,7 @@ function RegisterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const response = await registerUser(values);
+    const response: IServerActionResponse = await registerUser(values);
     setLoading(false);
 
     if (response.success) {
