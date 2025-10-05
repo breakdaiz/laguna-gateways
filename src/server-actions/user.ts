@@ -5,6 +5,7 @@ import supabase from "../config/supabase";
 import { IUser } from "../interfaces";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export const registerUser = async (payload: Partial<IUser>) => {
   payload.role = "user";
@@ -37,10 +38,10 @@ export const registerUser = async (payload: Partial<IUser>) => {
     return errorResponse(insertError.message);
   }
   return successResponse(newUser, "User registered successfully.");
-<<<<<<< HEAD
 };
 
 export const loginUser = async (payload: Partial<IUser>) => {
+  console.log("loginUser");
   //  step1: check if user exist using email, if not give success false
   const { data: existingUsers, error: existingUsersError } = await supabase
     .from("user_profiles")
@@ -76,6 +77,36 @@ export const loginUser = async (payload: Partial<IUser>) => {
   );
 
   return successResponse({ token, role: payload.role }, "Login successful.");
-=======
->>>>>>> e7beb558512557b7b47fc19d121852f56f0e7cce
+};
+
+export const getLoggedInUser = async () => {
+  const cookieStore = await cookies();
+  const jwtToken = cookieStore.get("jwt_token")?.value;
+
+  console.log("getLoggedInUser");
+  const decryptedTokenData: any = jwt.verify(
+    jwtToken!,
+    process.env.JWT_SECRET || ""
+  );
+  if (!decryptedTokenData) {
+    return errorResponse("Invalid token.");
+  }
+  console.log("decryptedTokenData", decryptedTokenData);
+  const userId = decryptedTokenData.id;
+
+  const { data: users, error: userError } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", userId);
+
+  if (userError || !users || users.length === 0) {
+    errorResponse("User not found.");
+  }
+
+  console.log("Users: ", users);
+
+  //break;
+  const user = users[0];
+  delete user.password; // Remove password before sending user data
+  return successResponse(user, "User fetched successfully.");
 };
