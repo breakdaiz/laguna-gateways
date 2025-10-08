@@ -2,12 +2,12 @@ import { NextResponse, NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("jwt_token")?.value;
-  const pathaname = req.nextUrl.pathname;
+  const pathname = req.nextUrl.pathname;
   const isPrivateRoute =
-    pathaname.startsWith("/user") || pathaname.startsWith("/admin");
+    pathname.startsWith("/user") || pathname.startsWith("/admin");
 
   if (isPrivateRoute && !token) {
-    return NextResponse.redirect(new URL("/?formType=login", req.url));
+    return NextResponse.redirect(new URL(`/?formType=login`, req.url));
   }
 
   const role = req.cookies.get("role")?.value;
@@ -15,15 +15,12 @@ export function middleware(req: NextRequest) {
     if (role === "admin") {
       return NextResponse.redirect(new URL(`/${role}/dashboard`, req.url));
     }
-
-    return NextResponse.next();
   }
 
+  return NextResponse.next();
   // If the user is not authenticated, redirect to the login page
 
   //if the token exists and the user is on the login or register page, redirect to the home page
-
-  return NextResponse.redirect(new URL(pathaname, req.url));
 }
 
 export const config = {
