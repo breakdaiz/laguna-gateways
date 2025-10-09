@@ -8,6 +8,7 @@ import { set } from "zod";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import Spinner from "@/components/ui/spinner";
 
 function PrivateLayoutProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = React.useState(true);
@@ -39,10 +40,14 @@ function PrivateLayoutProvider({ children }: { children: React.ReactNode }) {
     fetchUserData();
   }, []);
 
+  if (loading) {
+    return <Spinner height='100vh' />;
+  }
+
   return (
     <div>
       <Header />
-      {children}
+      <div className='p-6'>{children}</div>
     </div>
   );
 }
