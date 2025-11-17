@@ -42,6 +42,7 @@ export const registerUser = async (payload: Partial<IUser>) => {
 
 export const loginUser = async (payload: Partial<IUser>) => {
   console.log("loginUser");
+  payload.role = payload.role || "user";
   //  step1: check if user exist using email, if not give success false
   const { data: existingUsers, error: existingUsersError } = await supabase
     .from("user_profiles")
@@ -69,6 +70,7 @@ export const loginUser = async (payload: Partial<IUser>) => {
       `You do not have permission to access this resource ${payload.role}`
     );
   }
+  
   // step3: if password match, generate a JWT token and return success true
   const token = jwt.sign(
     { id: existingUser.id, email: existingUser.email, role: existingUser.role },

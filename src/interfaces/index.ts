@@ -13,3 +13,21 @@ export interface IServerActionResponse {
   message: string;
   data?: any | null;
 }
+
+export interface IPackage {
+  id: string;
+  created_at: string;
+  name: string;
+  small_description: string;
+  full_description: string;
+  start_date_time: string;
+  end_date_time: string;
+  duration: string;
+  capacity: number;
+  price_per_member: number;
+  guide_name: string;
+  guide_mobile_number: string;
+  images: string[];
+  status: string;
+  is_active: boolean;
+}

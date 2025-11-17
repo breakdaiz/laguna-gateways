@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { email, z } from "zod";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -62,6 +62,7 @@ function LoginForm() {
       toast.error(res.message || "Something went wrong");
     }
   }
+  
   return (
     <div className='w-full px-10'>
       <Form {...form}>
