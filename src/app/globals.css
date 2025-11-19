@@ -182,3 +182,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+table{
+  border: 1px solid var(--border)
+}

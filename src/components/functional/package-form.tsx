@@ -40,7 +40,9 @@ const PackageForm = ({ formType }: { formType: "add" | "edit" }) => {
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
   const [images, setImages] = React.useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedImagesFiles, setSelectedImagesFiles] = React.useState<File[]>([]);
+  const [selectedImagesFiles, setSelectedImagesFiles] = React.useState<File[]>(
+    []
+  );
 
   const handleSelectImageDelete = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
@@ -63,8 +65,7 @@ const PackageForm = ({ formType }: { formType: "add" | "edit" }) => {
     },
   });
 
-   async function onSubmit(values: z.infer<typeof formSchema>) {
-   
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setLoading(true);
       let newImageUrls = [];
@@ -76,10 +77,9 @@ const PackageForm = ({ formType }: { formType: "add" | "edit" }) => {
       }
       const imageUrls = [...existingImageUrls, ...newImageUrls];
 
-
-       let response: any = null;
+      let response: any = null;
       if (formType === "add") {
-       response = await createPackage({
+        response = await createPackage({
           ...values,
           images: imageUrls,
           is_active: true,
@@ -366,11 +366,11 @@ const PackageForm = ({ formType }: { formType: "add" | "edit" }) => {
           </div>
 
           <div className='flex justify-end gap-5'>
-            <Button variant={"outline"} disabled={loading} type='button'>
+            <Button  onClick={()=> router.back()} variant={"outline"} disabled={loading} type='button'>
               Cancel
             </Button>
             <Button disabled={loading} type='submit'>
-              Save
+              {formType === "add" ? "Add Package" : "Update Package"}
             </Button>
           </div>
         </form>
