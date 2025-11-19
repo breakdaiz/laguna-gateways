@@ -28,6 +28,6 @@ export interface IPackage {
   guide_name: string;
   guide_mobile_number: string;
   images: string[];
-  status: string;
   is_active: boolean;
+  status: string;
 }

@@ -1,4 +1,4 @@
-"user-server";
+"use server";
 
 import supabase from "@/config/supabase";
 import { successResponse, errorResponse } from "@/helpers/request-responses";
@@ -60,5 +60,5 @@ export const getAllPackages = async () => {
   if (error) {
     return errorResponse(error.message);
   }
-  return successResponse(data, "Packages retrieved sucessfully!")
+  return successResponse(data, "Packages retrieved")
 }
